@@ -1,12 +1,9 @@
-require([
-    "esri/views/SceneView",
-    'esri/WebScene',
-    "esri/core/watchUtils",
-    "esri/portal/PortalItem",
-    "esri/widgets/Home",
-    "./js/modules/ui.js"
+import SceneView from "esri/views/SceneView";
+import WebScene from "esri/WebScene";
+import watchUtils from "esri/core/watchUtils";
+import PortalItem from "esri/portal/PortalItem";
 
-], function (SceneView, WebScene, watchUtils, PortalItem, Home, ui) {
+function TiltShift() {
     /*
         In summary, all I'm doing here is using the "clip" to cut a webscene up. Then applying a css blur to the scene to filter it.
 
@@ -14,37 +11,61 @@ require([
     */
 
 
-    ui.disableLoadButton();
+    // ui.disableLoadButton();
 
     // default values
     var near = 400; // distance of near clip
     var far = 1000; // distance of far clip
+    let sceneId = "95d550cc185c482ca8a3ca4ca57ba444";
+
+    
+    // function to retrieve query parameters (in this case only id)
+    function getUrlParams() {
+        const queryParams = document.location.search.substr(1);
+        let result: any = {};
+
+        queryParams.split("?").map((params: string) => {
+            params.split("&").map((param: string) => {
+                var item = param.split("=");
+                result[item[0]] = decodeURIComponent(item[1]);
+            })
+        });
+
+        if (result.id) sceneId = result.id;
+        // if (result.mode) mode = result.mode;
+        // if (result.speedFactor) speedFactor = result.speedFactor;
+        // if (result.offset)  offset = result.offset;
+        // if (result.startAt)  startAt = result.startAt;
+        // if (result.easing)  easing = result.easing;
+    }
+
+    getUrlParams();
 
     // main webscene
     var scene = new WebScene({
         portalItem: {
-            id: "95d550cc185c482ca8a3ca4ca57ba444"
+            id: sceneId
         }
     });
 
-    // Creating views.
-    // Look at this in the future -> it's currently opacity: 0 and purely here for the attribution and ui elements. 
-    var blank = new SceneView({
-        container: "blankDiv",
-        map: scene,
-        qualityProfile: "low",
-        environment: {
-            starsEnabled: false,
-            atmosphereEnabled: false,
-            lighting: {
-                cameraTrackingEnabled: false,
-                directShadowsEnabled: false,
-            }
-        },
-        constraints: {
-            snapToZoom: false
-        }
-    });
+    // // Creating views.
+    // // Look at this in the future -> it's currently opacity: 0 and purely here for the attribution and ui elements. 
+    // var blank = new SceneView({
+    //     container: "blankDiv",
+    //     map: scene,
+    //     qualityProfile: "low",
+    //     environment: {
+    //         starsEnabled: false,
+    //         atmosphereEnabled: false,
+    //         lighting: {
+    //             cameraTrackingEnabled: false,
+    //             directShadowsEnabled: false,
+    //         }
+    //     },
+    //     constraints: {
+    //         snapToZoom: false
+    //     }
+    // });
 
     // closest view (also blurred)
     var front = new SceneView({
@@ -163,12 +184,12 @@ require([
     view.ui.components = [];
     front.ui.components = [];
 
-    var homeBtn = new Home({
-        view: view
-    });
+    // var homeBtn = new Home({
+    //     view: view
+    // });
 
     // Add the home button to the top left corner of the view
-    blank.ui.add(homeBtn, "top-left");
+    // blank.ui.add(homeBtn, "top-left");
 
     // sync the views (this is taken from the sync views sample in js api)
     var synchronizeView = function (view, others) {
@@ -261,7 +282,8 @@ require([
     };
 
     // bind the views
-    synchronizeViews([blank, view, back, backStaggered, front]);
+    // synchronizeViews([blank, view, back, backStaggered, front]);
+    synchronizeViews([view, back, backStaggered, front]);
 
     // creating slider
     $(function () {
@@ -306,14 +328,14 @@ require([
     document.getElementById("load-webmap").addEventListener("click", loadWebmapid);
 
 
-    $("#webmapid").on("change paste keyup", function () {
-        const text = $(this).val()
-        if (text.length === 32) {
-            ui.enableLoadButton();
-        } else {
-            ui.disableLoadButton();
-        }
-    });
+    // $("#webmapid").on("change paste keyup", function () {
+    //     const text = $(this).val()
+    //     if (text.length === 32) {
+    //         ui.enableLoadButton();
+    //     } else {
+    //         ui.disableLoadButton();
+    //     }
+    // });
 
 
     // functions for listeners
@@ -331,7 +353,7 @@ require([
 
         item.load().then(function () {
             if (item.type === "Web Scene") {
-                ui.successLoadButton()
+                // ui.successLoadButton()
 
                 scene = new WebScene({
                     portalItem: {
@@ -344,9 +366,9 @@ require([
                 view.map = scene;
                 back.map = scene;
                 backStaggered.map = scene;
-                blank.map = scene;
+                // blank.map = scene;
             } else {
-                ui.errorLoadButton()
+                // ui.errorLoadButton()
             };
 
         })
@@ -369,8 +391,8 @@ require([
         view.constraints.clipDistance.near = (min) - 10;
         view.constraints.clipDistance.far = (max) + 10;
 
-        blank.constraints.clipDistance.near = (min) - 10;
-        blank.constraints.clipDistance.far = (max) + 10;
+        // blank.constraints.clipDistance.near = (min) - 10;
+        // blank.constraints.clipDistance.far = (max) + 10;
     };
 
     function updateBlur() {
@@ -393,6 +415,8 @@ require([
         view.camera = newCam;
         back.camera = newCam;
         backStaggered.camera = newCam;
-        blank.camera = newCam;
+        // blank.camera = newCam;
     };
-});
+};
+
+TiltShift();

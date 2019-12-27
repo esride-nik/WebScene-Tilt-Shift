@@ -1,0 +1,24 @@
+{
+  "name": "wts",
+  "version": "1.0.0",
+  "description": "Prototype app of adding tilt shift (depth of field) to webscenes.",
+  "main": "index.js",
+  "dependencies": {
+    "browser-sync": "^2.26.7",
+    "typescript": "^3.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "browser-sync -s -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smcgee2/WebScene-Tilt-Shift.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smcgee2/WebScene-Tilt-Shift/issues"
+  },
+  "homepage": "https://github.com/smcgee2/WebScene-Tilt-Shift#readme"
+}
